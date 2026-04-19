@@ -16,6 +16,8 @@ Files
   One step installer copying files into user config then enabling service
 - `uninstall.sh`
   One step uninstaller removing installed user files then disabling service
+- `build-release.sh`
+  Release packager creating versioned tar gz archives in `dist`
 
 Dependencies
 
@@ -41,6 +43,21 @@ Run installer from repository root
 chmod +x install.sh
 ./install.sh
 ```
+
+Create release archive
+
+```bash
+chmod +x build-release.sh
+./build-release.sh
+```
+
+Optional explicit version
+
+```bash
+./build-release.sh v1.0.0
+```
+
+Archive will be written to `dist/` and contains the config script service installer uninstaller README and license.
 
 Uninstall
 

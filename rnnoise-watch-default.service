@@ -1,0 +1,13 @@
+[Unit]
+Description=Watch default raw mic and relink it into RNNoise
+After=pipewire.service wireplumber.service
+Wants=pipewire.service wireplumber.service
+
+[Service]
+Type=simple
+ExecStart=/home/thedoctorttv/.local/bin/rnnoise-watch-default.fish
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target

@@ -16,8 +16,6 @@ Files
   One step installer copying files into user config then enabling service
 - `uninstall.sh`
   One step uninstaller removing installed user files then disabling service
-- `build-release.sh`
-  Release packager creating versioned tar gz archives in `dist`
 
 Dependencies
 
@@ -33,32 +31,19 @@ Debian Ubuntu
 sudo apt install lsp-plugins-ladspa
 ```
 
-If plugin installs library outside `/usr/lib/ladspa/librnnoise_ladspa.so` update path inside `99-rnnoise-source.conf`.
+Installer will try to detect `librnnoise_ladspa.so` automatically.
+If autodetection fails rerun with `RNNOISE_PLUGIN_PATH=/full/path/to/librnnoise_ladspa.so ./install.sh`.
 
 Setup
 
-Run installer from repository root
+Clone repo then run installer from repository root
 
 ```bash
+git clone https://github.com/TheDoctorTTV/rnnoise-autoswitch-defaultmic.git
+cd rnnoise-autoswitch-defaultmic
 chmod +x install.sh
 ./install.sh
 ```
-
-Create release archive
-
-```bash
-chmod +x build-release.sh
-./build-release.sh
-```
-
-Optional explicit version
-
-```bash
-./build-release.sh v1.0.0
-```
-
-Archive will be written to `dist/` and contains the config script service installer uninstaller README and license.
-
 Uninstall
 
 ```bash
@@ -70,7 +55,7 @@ Manual setup if preferred
 
 ```bash
 mkdir -p ~/.config/pipewire/pipewire.conf.d ~/.local/bin ~/.config/systemd/user
-install -m 0644 99-rnnoise-source.conf ~/.config/pipewire/pipewire.conf.d/99-rnnoise-source.conf
+sed "s|@RNNOISE_PLUGIN_PATH@|/full/path/to/librnnoise_ladspa.so|g" 99-rnnoise-source.conf > ~/.config/pipewire/pipewire.conf.d/99-rnnoise-source.conf
 install -m 0755 rnnoise-watch-default.sh ~/.local/bin/rnnoise-watch-default.sh
 install -m 0644 rnnoise-watch-default.service ~/.config/systemd/user/rnnoise-watch-default.service
 systemctl --user daemon-reload
@@ -80,7 +65,7 @@ systemctl --user restart pipewire pipewire-pulse wireplumber
 
 Usage
 
-Set OBS Discord VRChat and similar apps input device to `RNNoise Mic`.
+Set OBS, Discord, VRChat and similar apps input device to `RNNoise Mic`.
 
 Watcher will
 - detect current default raw microphone
@@ -113,6 +98,8 @@ Notes
 
 - no EasyEffects required
 - service path uses `%h` so config works across usernames
-- watcher no longer hardcodes microphone names
+- installer autodetects common RNNoise LADSPA library locations
+- watcher autodetects the RNNoise target input port and common source capture ports
+- watcher can be overridden with `RNNOISE_CAPTURE_NODE_NAME` `RNNOISE_SOURCE_NODE_NAME` `RNNOISE_TARGET_PORT` `IGNORE_SOURCE_NODE_NAMES` and `POLL_INTERVAL_SECONDS`
 - watcher parses current WirePlumber `wpctl inspect` output format
 - stale RNNoise input links are cleaned up by PipeWire link id

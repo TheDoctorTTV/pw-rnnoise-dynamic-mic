@@ -64,6 +64,8 @@ systemctl --user enable --now rnnoise-watch-default.service
 systemctl --user restart pipewire pipewire-pulse wireplumber
 ```
 
+If PipeWire still acts up after setup, log out of your current session and log back in to fully restart PipeWire and avoid audio issues.
+
 ## Usage
 
 Set OBS, Discord, VRChat and similar apps input device to `RNNoise Mic`.
